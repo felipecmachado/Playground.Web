@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using WebPlayground.Domain.Branch;
 using WebPlayground.Domain.CheckingAccount;
 using WebPlayground.Domain.Management;
 
@@ -11,18 +12,22 @@ namespace WebPlayground.Infrastructure
             : base(options)
         { }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Transaction>()
+                .HasIndex(b => b.Timestamp);
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
 
-        // protected override void OnModelCreating(ModelBuilder modelBuilder) { }
-
-        public DbSet<Account> Accounts { get; set; }
         public DbSet<Balance> Balances { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<CheckingAccount> CheckingAccounts { get; set; }
         public DbSet<Settings> Settings { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
 

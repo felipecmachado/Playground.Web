@@ -14,4 +14,8 @@
     <ProjectReference Include="..\WebPlayground.Domain\WebPlayground.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>

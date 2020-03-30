@@ -1,9 +1,8 @@
 using FakeItEasy;
 using FluentAssertions;
-using NUnit.Framework;
 using System;
 
-namespace Playground.BackgroundServices.Tests
+namespace WebPlayground.Tests
 {
     public class ServiceTests
     {
