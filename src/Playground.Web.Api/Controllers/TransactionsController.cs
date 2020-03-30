@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Playground.Web.Business.Interfaces;
 using Playground.Web.Responses;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Playground.Web.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/transactions")]
     [Produces("application/json")]

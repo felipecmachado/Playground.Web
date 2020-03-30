@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
 namespace Playground.Web.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/settings")]
     public class SettingsController : ControllerBase
