@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Playground.Web.Infrastructure\Playground.Web.Infrastructure.csproj" />
+    <ProjectReference Include="..\Playground.Web.Domain\Playground.Web.Domain.csproj" />
+    <ProjectReference Include="..\Playground.Web.Shared\Playground.Web.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
