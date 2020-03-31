@@ -38,8 +38,7 @@ Solution:
 ![image](https://user-images.githubusercontent.com/2963750/77974222-dc1cef00-72cc-11ea-8afd-7bcc3f571668.png)
 
 ## How to test it:
-**Frontend**:
-
+**Frontend**:  
 Clone this repository and enter the frontend directory  
 Install the dependencies by running npm install  
 Start the project by running npm run-script dev (remember to start the backend first)  
