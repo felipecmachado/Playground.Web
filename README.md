@@ -4,7 +4,7 @@ Playground.Web - This is a full stack web application created for fun and trying
 
 - Architecture: NET Core 3.1 / VueJS / MySQL;
 - Design Patterns and Practices: SOLID principles, Code-First, EF Core, NET Core Native DI, Unit Tests;
-- Used Vue Paper Dashboard as a base template (Lots of thanks to Creative Tim);
+- Used Vue Paper Dashboard as a base template (Lot of thanks to Creative Tim);
 
 ## Architecture
 ![image](https://user-images.githubusercontent.com/2963750/77981171-93226600-72df-11ea-8023-827e751c5a40.png)
