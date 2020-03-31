@@ -46,9 +46,9 @@ Start the project by running npm run-script dev (remember to start the backend f
 
 **Backend**:  
 Clone this repository and enter the backend directory  
-Enter the Web.Api directory
-Start the project by running dotnet run   
-Navigate to the http://localhost:5000/swagger
+Enter the Web.Api directory  
+Start the project by running dotnet run  
+Navigate to the http://localhost:5000/swagger  
 You can use the login admin/admin to get a token and add to Swagger
 
 ## References:
