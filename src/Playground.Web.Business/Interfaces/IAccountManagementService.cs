@@ -8,7 +8,7 @@ namespace Playground.Web.Business.Interfaces
     public interface IAccountManagementService
     {
         Task<IList<CheckingAccount>> GetAllCheckingAccounts();
-        Task<CheckingAccount> GetCheckingAccount(int id);
+        Task<CheckingAccount> GetCheckingAccount(int accountId, int userId);
         Task CreateCheckingAccount(AccountCreationRequest request);
         Task DisableCheckingAccount(int checkingAccountId);
         Task<Balance> SaveBalance(int checkingAccountId);

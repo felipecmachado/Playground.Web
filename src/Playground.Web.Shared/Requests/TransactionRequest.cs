@@ -2,9 +2,9 @@
 {
     public abstract class TransactionRequest
     {
-        public string AccountNumber { get; set; }
+        public int CheckingAccountId { get; set; }
 
-        public string Token { get; set; }
+        public string TransactionToken { get; set; }
 
         public decimal Amount { get; set; }
     }

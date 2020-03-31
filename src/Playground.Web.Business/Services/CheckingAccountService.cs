@@ -26,14 +26,11 @@ namespace Playground.Web.Business.Services
                 .Where(x => x.CheckingAccountId == accountId && x.UserId == userId)
                 .FirstOrDefaultAsync();
 
-        public Task<Response<IList<Transaction>>> GetRecentTransactions(int userId, int accountId, int days = 7)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Response<IList<Transaction>>> GetStatement(int userId, int accountId)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IList<Transaction>> GetTransactions(int userId, int accountId, int days = 7)
+            => await this.Context.Transactions
+                .Where(x => x.CheckingAccountId == accountId && x.CheckingAccount.UserId == userId)           
+                .Where(x => x.Timestamp > DateTime.UtcNow.AddDays(-days))
+                .Take(10)
+                .ToListAsync();
     }
 }

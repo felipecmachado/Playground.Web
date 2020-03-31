@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Playground.Web.Business.Interfaces;
 using Playground.Web.Shared.Requests;
+using System;
+using System.Linq;
 using System.Net.Mime;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Playground.Web.API.Controllers
@@ -15,10 +18,12 @@ namespace Playground.Web.API.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IAccountManagementService _accountManagementService;
+        private readonly ICheckingAccountService _checkingAccountService;
 
-        public AccountsController(IAccountManagementService accountManagementService)
+        public AccountsController(IAccountManagementService accountManagementService, ICheckingAccountService checkingAccountService)
         {
             this._accountManagementService = accountManagementService;
+            this._checkingAccountService = checkingAccountService;
         }
 
         [HttpPost]
@@ -52,22 +57,32 @@ namespace Playground.Web.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetById(int id)
-            => Ok(await this._accountManagementService.GetCheckingAccount(id));
-
-        [HttpGet]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll()
-            => Ok(await this._accountManagementService.GetAllCheckingAccounts());
-
-        [HttpGet, Route("statement")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetStatement(int checkingAccountId)
         {
-            return Ok();
+            var userId = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value);
+            
+            return Ok(await this._accountManagementService.GetCheckingAccount(id, userId));
+        }
+
+        [HttpGet, Route("{id}/statement")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetStatement(int id)
+        {
+            var userId = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value);
+
+            return Ok(await this._checkingAccountService.GetTransactions(userId, id, 30));
+        }
+
+        [HttpGet, Route("{id}/recent")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetRecentTransactions(int id, int days = 7)
+        {
+            var userId = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value);
+
+            return Ok(await this._checkingAccountService.GetTransactions(userId, id, days));
         }
     }
 }

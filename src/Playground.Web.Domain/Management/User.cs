@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Playground.Web.Domain.CheckingAccount;
 
 namespace Playground.Web.Domain.Management
 {
@@ -26,5 +27,7 @@ namespace Playground.Web.Domain.Management
         public string PhoneNumber { get; set; }
 
         public DateTime LastAccessAt { get; set; }
+
+        public virtual CheckingAccount.CheckingAccount CheckingAccount { get; set; }
     }
 }

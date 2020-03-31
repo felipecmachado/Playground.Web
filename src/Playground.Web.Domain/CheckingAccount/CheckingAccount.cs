@@ -17,7 +17,7 @@ namespace Playground.Web.Domain.CheckingAccount
         public string AccountNumber { get; set; }
 
         [Required]
-        public string Token { get; set; }
+        public string TransactionToken { get; set; }
 
         [Required]
         public int UserId { get; set; }
@@ -38,11 +38,11 @@ namespace Playground.Web.Domain.CheckingAccount
         public virtual User User { get; set; }
 
         public bool IsTokenValid(string token)
-            => this.Token == token;
+            => this.TransactionToken == token;
 
         public void GenerateToken()
         {
-            this.Token = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            this.TransactionToken = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
         }
     }
 }

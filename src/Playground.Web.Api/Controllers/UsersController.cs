@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Playground.Web.Business.Interfaces;
 using Playground.Web.Shared.Requests;
+using System;
+using System.Linq;
 using System.Net.Mime;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Playground.Web.API.Controllers
@@ -27,6 +30,17 @@ namespace Playground.Web.API.Controllers
         {
             var users = await _userService.GetAll();
             return Ok(users);
+        }
+
+        [HttpGet("me")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByToken()
+        {
+            var userId = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value);
+
+            var user = await _userService.GetById(userId);
+            return Ok(user);
         }
 
         [AllowAnonymous]

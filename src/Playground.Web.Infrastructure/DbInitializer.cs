@@ -51,6 +51,7 @@ namespace Playground.Web.Infrastructure
             {
                 var users = new List<User>
                 {
+                    new User { Login = "admin", Password = "admin", FirstName = "Administrator", LastName = "", EmailAddress = "felipecmachado@outlook.com", PhoneNumber = "51 99999999" },
                     new User { Login = "FELIPE", Password = "F1E2L3", FirstName = "Felipe", LastName = "Machado", EmailAddress = "felipecmachado@outlook.com", PhoneNumber = "51 99999999" }
                 };
 
@@ -82,9 +83,15 @@ namespace Playground.Web.Infrastructure
 
                 var branch = context.Branches.FirstOrDefault();
 
-                foreach(var user in context.Users.ToList())
+                foreach(var user in context.Users.OrderBy(x => x.UserId).ToList())
                 {
-                    var acc = new CheckingAccount() { UserId = user.UserId , BranchId = branch.BranchId, Balance = 300m, Branch = branch };
+                    var acc = new CheckingAccount() { 
+                        UserId = user.UserId,
+                        AccountNumber = $"{user.FirstName.Substring(0,3).ToUpper()}001",
+                        BranchId = branch.BranchId,
+                        Balance = 300m,
+                        Branch = branch };
+
                     acc.GenerateToken();
                     accounts.Add(acc);
                 }

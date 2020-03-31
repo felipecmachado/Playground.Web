@@ -8,8 +8,7 @@ namespace Playground.Web.Business.Interfaces
 {
     public interface ICheckingAccountService
     {
-        Task<Response<IList<Transaction>>> GetRecentTransactions(int userId, int accountId, int days = 7);
-        Task<Response<IList<Transaction>>> GetStatement(int userId, int accountId);
+        Task<IList<Transaction>> GetTransactions(int userId, int accountId, int days = 7);
         Task<decimal> GetBalance(int userId, int accountId);
         Task<CheckingAccount> GetCheckingAccount(int userId, int accountId);
     }

@@ -32,11 +32,11 @@ namespace Playground.Web.Business.Services
                 .Include(account => account.User)
                 .ToListAsync();
 
-        public async Task<CheckingAccount> GetCheckingAccount(int id)
+        public async Task<CheckingAccount> GetCheckingAccount(int accountId, int userId)
             => await this.Context.CheckingAccounts
                 .Include(account => account.Branch)
                 .Include(account => account.User)
-                .FirstOrDefaultAsync(x => x.CheckingAccountId == id);
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.CheckingAccountId == accountId);
 
         /// <summary>
         /// Takes a screenshot of the actual balance of an account

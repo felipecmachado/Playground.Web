@@ -6,6 +6,12 @@ namespace Playground.Web.Domain.CheckingAccount
 {
     public class Withdraw
     {
+        public Withdraw(Guid transactionGuid, string address)
+        {
+            this.TransactionGuid = transactionGuid;
+            this.Address = address;
+        }
+
         [Key]
         public int WithdrawId { get; set; }
 

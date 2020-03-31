@@ -62,7 +62,7 @@ namespace Playground.Web.Business.Interfaces
             => new Response<IList<User>>() { Code = ResponseCode.Success, Item = await this.Context.Users.ToListAsync() };
 
         public async Task<Response<User>> GetById(int id)
-            => new Response<User>() { Code = ResponseCode.Success, Item = await this.Context.Users.FirstOrDefaultAsync(x => x.UserId == id) };
+            => new Response<User>() { Code = ResponseCode.Success, Item = await this.Context.Users.Include(x => x.CheckingAccount).FirstOrDefaultAsync(x => x.UserId == id) };
 
         private async Task UpdateLastAccess(User user)
         {

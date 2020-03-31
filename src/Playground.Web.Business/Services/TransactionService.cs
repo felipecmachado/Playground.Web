@@ -31,9 +31,9 @@ namespace Playground.Web.Business.Services
                     return response;
                 }
 
-                var account = await this.Context.CheckingAccounts.FirstOrDefaultAsync(x => x.UserId == userId && x.AccountNumber == request.AccountNumber);
+                var account = await this.Context.CheckingAccounts.FirstOrDefaultAsync(x => x.UserId == userId && x.CheckingAccountId == request.CheckingAccountId);
 
-                var validation = this.ValidateAccount(account, request.Token);
+                var validation = this.ValidateAccount(account, request.TransactionToken);
 
                 if (validation.HasErrors())
                 {
@@ -42,9 +42,22 @@ namespace Playground.Web.Business.Services
                     return response;
                 }
 
-                var transaction = await this.DoTransaction(TransactionType.Deposit, account, request.Amount);
+                using (var tran = Context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var transaction = await this.DoTransaction(TransactionType.Deposit, account, request.Amount);
+                        response.Item = await this.GenerateDepositReceipt(transaction);
 
-                response.Item = await this.GetDepositReceipt(transaction);
+                        tran.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        tran.Rollback();
+                        throw;
+                    }
+                }
+
                 response.Code = ResponseCode.Success;
             }
             catch (BusinessException ex)
@@ -84,9 +97,9 @@ namespace Playground.Web.Business.Services
                     return response;
                 }
 
-                var account = await this.Context.CheckingAccounts.FirstOrDefaultAsync(x => x.UserId == userId && x.AccountNumber == request.AccountNumber);
+                var account = await this.Context.CheckingAccounts.FirstOrDefaultAsync(x => x.UserId == userId && x.CheckingAccountId == request.CheckingAccountId);
 
-                var validation = this.ValidateAccount(account, request.Token);
+                var validation = this.ValidateAccount(account, request.TransactionToken);
 
                 if (validation.HasErrors())
                 {
@@ -95,9 +108,29 @@ namespace Playground.Web.Business.Services
                     return response;
                 }
 
-                var transaction = await this.DoTransaction(TransactionType.Payment, account, request.Amount);
+                if (account.Balance < request.Amount)
+                {
+                    response.Code = ResponseCode.Error;
+                    response.ResponseStatus.AddError("InsuficientFunds", "Insuficient funds");
+                    return response;
+                }
 
-                response.Item = await this.GetPaymentReceipt(transaction);
+                using (var tran = Context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var transaction = await this.DoTransaction(TransactionType.Payment, account, request.Amount);
+                        response.Item = await this.GeneratePaymentReceipt(transaction, request.BarCode);
+
+                        tran.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        tran.Rollback();
+                        throw;
+                    }
+                }
+
                 response.Code = ResponseCode.Success;
             }
             catch (BusinessException ex)
@@ -130,9 +163,9 @@ namespace Playground.Web.Business.Services
                     return response;
                 }
 
-                var account = await this.Context.CheckingAccounts.FirstOrDefaultAsync(x => x.UserId == userId && x.AccountNumber == request.AccountNumber);
+                var account = await this.Context.CheckingAccounts.FirstOrDefaultAsync(x => x.UserId == userId && x.CheckingAccountId == request.CheckingAccountId);
 
-                var validation = this.ValidateAccount(account, request.Token);
+                var validation = this.ValidateAccount(account, request.TransactionToken);
 
                 if (validation.HasErrors())
                 {
@@ -148,9 +181,22 @@ namespace Playground.Web.Business.Services
                     return response;
                 }
 
-                var transaction = await this.DoTransaction(TransactionType.Withdraw, account, request.Amount);
+                using (var tran = Context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var transaction = await this.DoTransaction(TransactionType.Withdraw, account, request.Amount);
+                        response.Item = await this.GenerateWithdrawReceipt(transaction);
 
-                response.Item = await this.GetWithdrawReceipt(transaction);
+                        tran.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        tran.Rollback();
+                        throw;
+                    }
+                }
+                    
                 response.Code = ResponseCode.Success;
             }
             catch (BusinessException ex)
@@ -176,9 +222,9 @@ namespace Playground.Web.Business.Services
 
             try
             {
-                var account = await this.Context.CheckingAccounts.FirstOrDefaultAsync(x => x.UserId == userId && x.AccountNumber == request.AccountNumber);
+                var account = await this.Context.CheckingAccounts.FirstOrDefaultAsync(x => x.UserId == userId && x.CheckingAccountId == request.CheckingAccountId);
 
-                var validation = this.ValidateAccount(account, request.Token);
+                var validation = this.ValidateAccount(account, request.TransactionToken);
 
                 // validate benefeciary
 
@@ -239,55 +285,46 @@ namespace Playground.Web.Business.Services
                 TransactionType = type,
             };
 
-            using (var tran = Context.Database.BeginTransaction())
-            {
-                try
-                {
-                    this.Context.Transactions.Add(transaction);
+            this.Context.Transactions.Add(transaction);
 
-                    this.Context.SaveChanges();
+            this.Context.CheckingAccounts.Update(account);
 
-                    #region Generate receipt
-
-                    switch (type)
-                    {
-                        case TransactionType.Withdraw:
-                        case TransactionType.Payment:
-                        case TransactionType.Transfer:
-                            break;
-                        case TransactionType.Deposit:
-                            this.Context.Deposits.Add(new Deposit(transaction.TransactionGuid));
-                            break;
-                        default:
-                            break;
-                    }
-
-                    this.Context.SaveChanges();
-
-                    #endregion
-
-                    // Update balance
-                    this.Context.CheckingAccounts.Update(account);
-
-                    tran.Commit();
-                }
-                catch (Exception)
-                {
-                    tran.Rollback();
-                    throw;
-                }
-            }
+            this.Context.SaveChanges();
 
             return transaction.TransactionGuid;
         }
 
-        public async Task<Deposit> GetDepositReceipt(Guid transactionGuid)
-            => await this.Context.Deposits.Where(x => x.TransactionGuid == transactionGuid).FirstOrDefaultAsync();
+        public async Task<Deposit> GenerateDepositReceipt(Guid transactionGuid)
+        {
+            var deposit = new Deposit(transactionGuid);
 
-        public async Task<Withdraw> GetWithdrawReceipt(Guid transactionGuid)
-            => await this.Context.Withdraws.Where(x => x.TransactionGuid == transactionGuid).FirstOrDefaultAsync();
+            this.Context.Deposits.Add(deposit);
 
-        public async Task<Payment> GetPaymentReceipt(Guid transactionGuid)
-            => await this.Context.Payments.Where(x => x.TransactionGuid == transactionGuid).FirstOrDefaultAsync();
+            await this.Context.SaveChangesAsync();
+
+            return deposit;
+        }
+
+        public async Task<Withdraw> GenerateWithdrawReceipt(Guid transactionGuid)
+        {
+            var withdraw = new Withdraw(transactionGuid, "Porto Alegre, Rio Grande do Sul - Brasil");
+
+            this.Context.Withdraws.Add(withdraw);
+
+            await this.Context.SaveChangesAsync();
+
+            return withdraw;
+        }
+
+        public async Task<Payment> GeneratePaymentReceipt(Guid transactionGuid, string barCode)
+        {
+            var payment = new Payment(transactionGuid, barCode);
+
+            this.Context.Payments.Add(payment);
+
+            await this.Context.SaveChangesAsync();
+
+            return payment;
+        }
     }
 }

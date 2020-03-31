@@ -6,6 +6,12 @@ namespace Playground.Web.Domain.CheckingAccount
 {
     public class Payment
     {
+        public Payment(Guid transactionGuid, string barCode)
+        {
+            this.TransactionGuid = transactionGuid;
+            this.BarCode = barCode;
+        }
+
         [Key]
         public int PaymentId { get; set; }
 

@@ -8,6 +8,7 @@ using Playground.Web.BackgroundServices;
 using Playground.Web.Infrastructure;
 using Playground.Web.Shared.Common;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Playground.Web.API.Setup
 {
@@ -24,7 +25,9 @@ namespace Playground.Web.API.Setup
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddSwagger();
             
@@ -40,7 +43,8 @@ namespace Playground.Web.API.Setup
             // TODO: Change to MySql 
             services.AddDbContext<BankContext>
                 (options => options
-                  .UseInMemoryDatabase("web-playground"));
+                .UseInMemoryDatabase("web-playground")
+                .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
             
             services.AddHostedService<AutomaticInterestService>();
             services.AddHostedService<TransferManagementService>();

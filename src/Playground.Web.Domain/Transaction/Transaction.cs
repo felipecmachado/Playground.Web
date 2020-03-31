@@ -34,6 +34,9 @@ namespace Playground.Web.Domain.CheckingAccount
         /// Balance after transaction succedded
         /// </summary>
         public virtual decimal Balance { get; set; }
+        
+        [ForeignKey("CheckingAccountId")]
+        public virtual CheckingAccount CheckingAccount { get; set; }
 
         public virtual Transfer Transfer { get; set; }
 

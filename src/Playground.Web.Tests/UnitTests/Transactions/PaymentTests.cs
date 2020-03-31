@@ -8,7 +8,6 @@ namespace Playground.Web.Tests.UnitTests
     public class PaymentTests : BaseTests
     {
         private const int USER_ID = 1;
-        private const int ACCOUNT_ID = 1;
 
         private CheckingAccount checkingAccount;
 
@@ -19,7 +18,8 @@ namespace Playground.Web.Tests.UnitTests
         [SetUp]
         public async Task Setup()
         {
-            this.checkingAccount = (await this._myCheckingAccountService.GetCheckingAccount(USER_ID, ACCOUNT_ID));
+            var user = await this._userService.GetById(USER_ID);
+            this.checkingAccount = (await this._myCheckingAccountService.GetCheckingAccount(USER_ID, user.Item.CheckingAccount.CheckingAccountId));
         }
 
         [Test]
@@ -28,24 +28,43 @@ namespace Playground.Web.Tests.UnitTests
             // Arrange
             var request = new PaymentRequest()
             { 
-                AccountNumber = this.checkingAccount.AccountNumber,
+                CheckingAccountId = this.checkingAccount.CheckingAccountId,
                 Amount = 50,
-                Token = this.checkingAccount.Token,
+                TransactionToken = this.checkingAccount.TransactionToken,
                 BarCode = "0000000000000000000"
             };
 
             // Act
-            var previousValue = await this._myCheckingAccountService.GetBalance(1, 1);
+            var previousValue = await this._myCheckingAccountService.GetBalance(USER_ID, this.checkingAccount.CheckingAccountId);
 
-            var transaction = await _operationsService.PayBill(1, request);
+            var transaction = await _operationsService.PayBill(USER_ID, request);
 
             if (transaction.Code != Responses.ResponseCode.Success)
                 Assert.Fail("An error occurred while executing the transaction.");
 
-            var afterBalance = await this._myCheckingAccountService.GetBalance(1, 1);
+            var afterBalance = await this._myCheckingAccountService.GetBalance(USER_ID, this.checkingAccount.CheckingAccountId);
 
             // Assert
             Assert.IsTrue((previousValue - request.Amount) == afterBalance);
+        }
+
+        [Test]
+        public async Task PaymentShouldFailDueInsuficientFunds()
+        {
+            // Arrange
+            var request = new PaymentRequest()
+            {
+                CheckingAccountId = this.checkingAccount.CheckingAccountId,
+                Amount = 750,
+                TransactionToken = this.checkingAccount.TransactionToken,
+                BarCode = "0000000000000000000"
+            };
+
+            // Act
+            var transaction = await _operationsService.PayBill(USER_ID, request);
+
+            // Assert
+            Assert.IsTrue(transaction.Code == Responses.ResponseCode.Error && transaction.ResponseStatus.HasError("InsuficientFunds"));
         }
 
         [Test]
@@ -54,32 +73,32 @@ namespace Playground.Web.Tests.UnitTests
             // Arrange
             var request = new PaymentRequest()
             {
-                AccountNumber = this.checkingAccount.AccountNumber,
+                CheckingAccountId = this.checkingAccount.CheckingAccountId,
                 Amount = -10,
-                Token = this.checkingAccount.Token
+                TransactionToken = this.checkingAccount.TransactionToken
             };
 
             // Act
-            var transaction = await _operationsService.PayBill(1, request);
+            var transaction = await _operationsService.PayBill(USER_ID, request);
 
             // Assert
             Assert.IsTrue(transaction.Code == Responses.ResponseCode.Error && transaction.ResponseStatus.HasError("Amount"));
         }
 
         [Test]
-        public async Task PaymentShouldFailDueAnInvalidAccountNumber() 
+        public async Task PaymentShouldFailDueAnInvalidAccount() 
         {
             // Arrange
             var request = new PaymentRequest()
             {
-                AccountNumber = string.Empty,
+                CheckingAccountId = 0,
                 Amount = 50,
-                Token = this.checkingAccount.Token,
+                TransactionToken = this.checkingAccount.TransactionToken,
                 BarCode = "000000000000000000"
             };
 
             // Act
-            var transaction = await _operationsService.PayBill(1, request);
+            var transaction = await _operationsService.PayBill(USER_ID, request);
 
             // Assert
             Assert.IsTrue(transaction.Code == Responses.ResponseCode.Error && transaction.ResponseStatus.HasError("AccountNumber"));
@@ -91,14 +110,14 @@ namespace Playground.Web.Tests.UnitTests
             // Arrange
             var request = new PaymentRequest()
             {
-                AccountNumber = this.checkingAccount.AccountNumber,
+                CheckingAccountId = this.checkingAccount.CheckingAccountId,
                 Amount = 50,
-                Token = string.Empty,
+                TransactionToken = string.Empty,
                 BarCode = "000000000000000000"
             };
 
             // Act
-            var transaction = await _operationsService.PayBill(1, request);
+            var transaction = await _operationsService.PayBill(USER_ID, request);
 
             // Assert
             Assert.IsTrue(transaction.Code == Responses.ResponseCode.Error && transaction.ResponseStatus.HasError("Token"));
