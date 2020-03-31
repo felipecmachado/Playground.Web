@@ -6,6 +6,7 @@ Playground.Web - This is a full stack web application created for fun and trying
 - Design Patterns and Practices: SOLID principles, Code-First, EF Core, NET Core Native DI, Unit Tests;
 
 ## Architecture
+![image](https://user-images.githubusercontent.com/2963750/77981171-93226600-72df-11ea-8023-827e751c5a40.png)
 ```
 Solution:
 - Playground.Web.Domain
