@@ -45,6 +45,7 @@ Start the project by running npm run-script dev (remember to start the backend f
 
 **Backend**:  
 Clone this repository and enter the backend directory  
+Go to the Startup.cs and change the AddDbContext options from MySql to InMemoryDatabase  
 Enter the Web.Api directory  
 Start the project by running dotnet run  
 Navigate to the http://localhost:5000/swagger  
