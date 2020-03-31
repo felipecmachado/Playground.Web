@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Playground.Web.Business.Interfaces;
 using Playground.Web.Data;
 using Playground.Web.Domain.CheckingAccount;
 using Playground.Web.Infrastructure;
-using Playground.Web.Responses;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Playground.Web.Business.Services
 {

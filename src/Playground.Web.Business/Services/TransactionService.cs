@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using Playground.Web.Business.Interfaces;
 using Playground.Web.Data;
 using Playground.Web.Domain.CheckingAccount;
@@ -7,8 +6,9 @@ using Playground.Web.Infrastructure;
 using Playground.Web.Responses;
 using Playground.Web.Shared.Exceptions;
 using Playground.Web.Shared.Requests;
+using System;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Playground.Web.Business.Services
 {
