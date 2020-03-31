@@ -33,6 +33,7 @@ Solution:
 - Isolate API from Entity models (create DTOs for everything and maybe use AutoMapper to make it easier);
 - Apply Repository pattern;
 - Review if more abstraction is needed (maybe not since the project isn't that big);
+- Write more unit tests (it should cover most of the web app);
 
 ## API
 ![image](https://user-images.githubusercontent.com/2963750/77974222-dc1cef00-72cc-11ea-8afd-7bcc3f571668.png)
@@ -50,6 +51,9 @@ Enter the Web.Api directory
 Start the project by running dotnet run  
 Navigate to the http://localhost:5000/swagger  
 You can use the login admin/admin to get a token and add to Swagger
+
+## Unit tests
+![image](https://user-images.githubusercontent.com/2963750/77977031-ee9b2680-72d4-11ea-8518-90cf241f50c1.png)
 
 ## References:
 > Built using: https://dotnet.microsoft.com/download/dotnet-core/3.1
