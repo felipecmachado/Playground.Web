@@ -39,6 +39,9 @@ Solution:
 ## API
 ![image](https://user-images.githubusercontent.com/2963750/77974222-dc1cef00-72cc-11ea-8afd-7bcc3f571668.png)
 
+## Layout
+![image](https://user-images.githubusercontent.com/2963750/78040956-86852880-7346-11ea-9b34-634d42caade6.png)
+
 ## How to test it:
 **Frontend**:  
 Clone this repository and enter the frontend directory  
