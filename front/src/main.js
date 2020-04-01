@@ -16,6 +16,7 @@
 import Vue from "vue";
 import App from "./App";
 import router from "./router/index";
+import axios from "axios";
 
 import PaperDashboard from "./plugins/paperDashboard";
 import "vue-notifyjs/themes/default.css";
@@ -27,3 +28,8 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount("#app");
+
+axios.post('http://localhost:5000/api/users/authenticate', { Username: 'admin', Password: 'admin' })
+  .then(function(response){
+    localStorage.setItem('token',"Bearer " + response.data.token);
+  });

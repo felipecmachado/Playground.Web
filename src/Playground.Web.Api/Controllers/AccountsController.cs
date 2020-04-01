@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Playground.Web.API.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [ApiController]
     [Route("api/accounts")]
     [Produces("application/json")]
@@ -32,15 +32,6 @@ namespace Playground.Web.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Create(AccountCreationRequest request)
         {
-            //if (product.Description.Contains("XYZ Widget"))
-            //{
-            //    return BadRequest();
-            //}
-
-            //await _repository.AddProductAsync(product);
-
-            //return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
-
             return Ok();
         }
 
@@ -59,7 +50,7 @@ namespace Playground.Web.API.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value);
-            
+
             return Ok(await this._accountManagementService.GetCheckingAccount(id, userId));
         }
 
@@ -72,6 +63,17 @@ namespace Playground.Web.API.Controllers
             var userId = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value);
 
             return Ok(await this._checkingAccountService.GetTransactions(userId, id, 30));
+        }
+
+        [HttpGet, Route("{id}/balances")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetBalances(int id)
+        {
+            var userId = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value);
+
+            return Ok(await this._checkingAccountService.GetBalances(userId, id, 15));
         }
 
         [HttpGet, Route("{id}/recent")]

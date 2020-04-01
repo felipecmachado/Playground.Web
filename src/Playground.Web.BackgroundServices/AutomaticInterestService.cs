@@ -109,15 +109,22 @@ namespace Playground.Web.BackgroundServices
                 var dbContext = scope.ServiceProvider.GetRequiredService<BankContext>();
 
                 var accounts = dbContext.CheckingAccounts.Where(x => x.AutomaticInterest).ToListAsync();
-                var rate = dbContext.Settings
+                var rate = await dbContext.Settings
                     .Where(x => x.Key == INTERESTRATE_KEY)
                     .Select(x => Decimal.Parse(x.Value) / 365) // Get daily rate
                     .FirstOrDefaultAsync();
 
                 foreach (var account in await accounts)
                 {
-                    //TODO:
+                    var increment = (account.Balance * rate);
+
+                    _logger.LogInformation($"AccountId: { account.CheckingAccountId} - Balance: {account.Balance} - Adding ${increment} to the account.");
+
+                    account.Balance += increment;
+                    dbContext.Update(account);
                 }
+
+                await dbContext.SaveChangesAsync();
             }
         }
 

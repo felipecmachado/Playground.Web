@@ -5,6 +5,7 @@ using System.Linq;
 using Playground.Web.Domain.Branch;
 using Playground.Web.Domain.CheckingAccount;
 using Playground.Web.Domain.Management;
+using System;
 
 namespace Playground.Web.Infrastructure
 {
@@ -20,10 +21,13 @@ namespace Playground.Web.Infrastructure
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
+                // Fake data
                 SeedSettings(context);
                 SeedUsers(context);
                 SeedBranches(context);
                 SeedAccounts(context);
+                SeedBalances(context);
+                SeedTransactions(context);
             }
 
             return host;
@@ -97,6 +101,52 @@ namespace Playground.Web.Infrastructure
                 }
 
                 context.AddRange(accounts);
+                context.SaveChanges();
+            }
+        }
+
+        private static void SeedBalances(BankContext context)
+        {
+            if (!context.Balances.Any())
+            {
+                foreach (var account in context.CheckingAccounts.OrderBy(x => x.CheckingAccountId).ToList())
+                {
+                    var balances = new List<Balance>
+                    {
+                        new Balance { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date, Amount = 100 },
+                        new Balance { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-1), Amount = 115 },
+                        new Balance { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-2), Amount = 150 },
+                        new Balance { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-3), Amount = 150 },
+                        new Balance { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-4), Amount = 300 },
+                        new Balance { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-5), Amount = 200 },
+                        new Balance { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-6), Amount = 100 },
+                    };
+
+                    context.AddRange(balances);
+                }
+                context.SaveChanges();
+            }
+        }
+
+        private static void SeedTransactions(BankContext context)
+        {
+            if (!context.Transactions.Any())
+            {
+                foreach (var account in context.CheckingAccounts.OrderBy(x => x.CheckingAccountId).ToList())
+                {
+                    var balances = new List<Transaction>
+                    {
+                        new Transaction { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date, Amount = 100, TransactionType = TransactionType.Deposit },
+                        new Transaction { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-1), Amount = 115, TransactionType = TransactionType.Payment },
+                        new Transaction { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-2), Amount = 150, TransactionType = TransactionType.Withdraw },
+                        new Transaction { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-3), Amount = 150, TransactionType = TransactionType.Deposit },
+                        new Transaction { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-4), Amount = 300, TransactionType = TransactionType.Deposit },
+                        new Transaction { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-5), Amount = 200, TransactionType = TransactionType.Withdraw },
+                        new Transaction { CheckingAccountId = account.CheckingAccountId, Timestamp = DateTime.Now.Date.AddDays(-6), Amount = 100, TransactionType = TransactionType.Withdraw },
+                    };
+
+                    context.AddRange(balances);
+                }
                 context.SaveChanges();
             }
         }

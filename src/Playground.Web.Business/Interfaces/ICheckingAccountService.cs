@@ -11,5 +11,6 @@ namespace Playground.Web.Business.Interfaces
         Task<IList<Transaction>> GetTransactions(int userId, int accountId, int days = 7);
         Task<decimal> GetBalance(int userId, int accountId);
         Task<CheckingAccount> GetCheckingAccount(int userId, int accountId);
+        Task<IList<Balance>> GetBalances(int userId, int accountId, int days);
     }
 }

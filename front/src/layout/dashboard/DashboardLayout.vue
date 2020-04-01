@@ -3,45 +3,16 @@
     <side-bar>
       <template slot="links">
         <sidebar-link to="/dashboard" name="Dashboard" icon="ti-home"/>
-        <sidebar-link to="/dashboard" name="History" icon="ti-archive"/>
-        <sidebar-link to="/dashboard" name="Transfer" icon="ti-email"/>
-        <sidebar-link to="/dashboard" name="Deposit" icon="ti-import"/>
-        <sidebar-link to="/dashboard" name="Withdraw" icon="ti-export"/>
-        <sidebar-link to="/dashboard" name="Payment" icon="ti-money"/>
-        <sidebar-link to="/stats" name="User Profile" icon="ti-user"/>
-        <sidebar-link to="/table-list" name="Table List" icon="ti-view-list-alt"/>
-        <sidebar-link to="/typography" name="Typography" icon="ti-text"/>
-        <sidebar-link to="/icons" name="Icons" icon="ti-pencil-alt2"/>
-        <sidebar-link to="/maps" name="Map" icon="ti-map"/>
-        <sidebar-link to="/notifications" name="Notifications" icon="ti-bell"/>
-        <sidebar-link to="/stats" name="Global Settings" icon="ti-settings"/>
-        <sidebar-link to="/stats" name="Status" icon="ti-heart"/>
+        <sidebar-link to="/account" name="My Account" icon="ti-user"/>
+        <sidebar-link to="/statement" name="History" icon="ti-archive"/>
+        <sidebar-link to="/transfer" name="Transfer" icon="ti-email"/>
+        <sidebar-link to="/deposit" name="Deposit" icon="ti-import"/>
+        <sidebar-link to="/withdraw" name="Withdraw" icon="ti-export"/>
+        <sidebar-link to="/payment" name="Payment" icon="ti-money"/>
+        <sidebar-link to="/settings" name="Global Settings" icon="ti-settings"/>
+        <sidebar-link to="/status" name="Status" icon="ti-heart"/>
       </template>
-      <mobile-menu>
-        <li class="nav-item">
-          <a class="nav-link">
-            <i class="ti-panel"></i>
-            <p>Stats</p>
-          </a>
-        </li>
-        <drop-down class="nav-item"
-                   title="5 Notifications"
-                   title-classes="nav-link"
-                   icon="ti-bell">
-          <a class="dropdown-item">Notification 1</a>
-          <a class="dropdown-item">Notification 2</a>
-          <a class="dropdown-item">Notification 3</a>
-          <a class="dropdown-item">Notification 4</a>
-          <a class="dropdown-item">Another notification</a>
-        </drop-down>
-        <li class="nav-item">
-          <a class="nav-link">
-            <i class="ti-settings"></i>
-            <p>Settings</p>
-          </a>
-        </li>
-        <li class="divider"></li>
-      </mobile-menu>
+
     </side-bar>
     <div class="main-panel">
       <top-navbar></top-navbar>
@@ -50,7 +21,6 @@
 
       </dashboard-content>
 
-      <content-footer></content-footer>
     </div>
   </div>
 </template>
@@ -58,13 +28,11 @@
 </style>
 <script>
 import TopNavbar from "./TopNavbar.vue";
-import ContentFooter from "./ContentFooter.vue";
 import DashboardContent from "./Content.vue";
 import MobileMenu from "./MobileMenu";
 export default {
   components: {
     TopNavbar,
-    ContentFooter,
     DashboardContent,
     MobileMenu
   },

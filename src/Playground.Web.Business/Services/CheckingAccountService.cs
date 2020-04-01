@@ -20,6 +20,13 @@ namespace Playground.Web.Business.Services
                 .Select(x => x.Balance)
                 .FirstOrDefaultAsync();
 
+        public async Task<IList<Balance>> GetBalances(int userId, int accountId, int days)
+            => await this.Context.Balances
+                .Where(x => x.CheckingAccountId == accountId && x.CheckingAccount.User.UserId == userId)
+                .Where(x => x.Timestamp > DateTime.UtcNow.AddDays(-days))
+                .OrderBy(x => x.Timestamp)
+                .ToListAsync();
+
         public async Task<CheckingAccount> GetCheckingAccount(int userId, int accountId)
             => await this.Context.CheckingAccounts
                 .Where(x => x.CheckingAccountId == accountId && x.UserId == userId)
