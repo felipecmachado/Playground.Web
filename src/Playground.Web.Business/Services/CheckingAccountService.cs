@@ -36,7 +36,7 @@ namespace Playground.Web.Business.Services
             => await this.Context.Transactions
                 .Where(x => x.CheckingAccountId == accountId && x.CheckingAccount.UserId == userId)           
                 .Where(x => x.Timestamp > DateTime.UtcNow.AddDays(-days))
-                .Take(10)
+                .OrderBy(x => x.Timestamp)
                 .ToListAsync();
     }
 }

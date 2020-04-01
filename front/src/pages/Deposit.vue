@@ -71,7 +71,7 @@ export default {
                 currentObj.output = "Success";
             })
             .catch(function (error) {
-                currentObj.output = "Invalid token";
+                currentObj.output = error.response.data.responseStatus.errors[0].message;
             });
         }
     }
