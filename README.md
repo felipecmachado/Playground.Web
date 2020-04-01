@@ -30,7 +30,7 @@ Solution:
 ```
 
 ## What next
-- Finish all features;
+- Finish Front-end (a lot is still missing) and add Login page;
 - Add Heartbeat using SignalR for all Background services;
 - Isolate API from Entity models (create DTOs for everything and maybe use AutoMapper to make it easier);
 - Apply Repository pattern;
@@ -41,7 +41,10 @@ Solution:
 ![image](https://user-images.githubusercontent.com/2963750/77974222-dc1cef00-72cc-11ea-8afd-7bcc3f571668.png)
 
 ## Layout
-![image](https://user-images.githubusercontent.com/2963750/78040956-86852880-7346-11ea-9b34-634d42caade6.png)
+![image](https://user-images.githubusercontent.com/2963750/78091841-6f752380-73a4-11ea-8a18-82a62d23631a.png)
+![image](https://user-images.githubusercontent.com/2963750/78091813-5cfaea00-73a4-11ea-80fe-58c464842665.png)
+![image](https://user-images.githubusercontent.com/2963750/78091898-95022d00-73a4-11ea-9797-c2abd05dca1d.png)
+![image](https://user-images.githubusercontent.com/2963750/78091938-a9dec080-73a4-11ea-9c35-c92eab3d9227.png)
 
 ## How to test it:
 **Frontend**:  
